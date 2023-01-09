@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8.0
+    platform: linux/x86_64
+    container_name: pupsroad_mysql
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_DATABASE=pupsroad
+      - MYSQL_ROOT_PASSWORD=root1234
+      - LANG=C.UTF-8
+    volumes:
+      - ./script/docker-mysql/conf/:/etc/mysql/conf.d
+      - ./script/docker-mysql/sql/:/docker-entrypoint-initdb.d
+    command: --sql_mode=''

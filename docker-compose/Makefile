@@ -26,6 +26,28 @@ compose.mysql: compose.prepare
 		-f docker-compose.mysql.yml \
 		up
 
+.PHONY: compose.mysql.linux
+compose.mysql.linux: compose.prepare
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Running docker-compose"
+	@ docker stop $(docker ps -a -q) || true
+	@ docker rm -f $(docker ps -a -q) || true
+	@ docker volume rm $(docker volume ls -f dangling=true -q) || true
+	@ docker-compose -f docker-compose.mysql.linux.yml rm -fsv || true
+	@ DOCKER_HOST_IP=$(DOCKER_HOST_IP) docker-compose \
+		-f docker-compose.mysql.linux.yml \
+		up
+
+.PHONY: compose.mysql.linux.daemon
+compose.mysql.linux.daemon: compose.prepare
+	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Running docker-compose"
+	@ docker stop $(docker ps -a -q) || true
+	@ docker rm -f $(docker ps -a -q) || true
+	@ docker volume rm $(docker volume ls -f dangling=true -q) || true
+	@ docker-compose -f docker-compose.mysql.linux.yml rm -fsv || true
+	@ DOCKER_HOST_IP=$(DOCKER_HOST_IP) docker-compose \
+		-f docker-compose.mysql.linux.yml \
+		up -d
+
 .PHONY: compose.redis
 compose.redis: compose.prepare
 	@ echo "[$(TAG)] ($(shell TZ=UTC date -u '+%H:%M:%S')) - Running docker-compose"
